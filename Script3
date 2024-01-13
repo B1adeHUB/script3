@@ -1,1071 +1,121 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-
-local Window = Library.CreateLib("MTP HUB", "DarkTheme")
-
-_G.AutoFarm = value
-
-Main:Toggle("Auto Farm",_G.AutoFarm,function(value)
-
-end)
-
-function TP(Pos)
-
-        Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-
-        if game.Players.LocalPlayer.Character.Humanoid.Sit == true then game.Players.LocalPlayer.Character.Humanoid.Sit = false end
-
-        pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/200, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
-
-        tween:Play()
-
-        if Distance <= 100 then
-
-            tween:Cancel()
-
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
-
-        end
-
-        if _G.StopTween == true then
-
-            tween:Cancel()
-
-            _G.Clip = false
-
-        end
-
-    end
-
-    function StopTween(target)
-
-        if not target then
-
-            _G.StopTween = true
-
-            wait()
-
-            TP(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
-
-            wait()
-
-            if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
-
-                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip"):Destroy()
-
-            end
-
-            _G.StopTween = false
-
-            _G.Clip = false
-
-        end
-
-    end
-
-function EquipWeapon(ToolSe)
-
-    if game.Players.LocalPlayer.Backpack:FindFirstChild(ToolSe) then
-
-        local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(ToolSe)
-
-        wait(.4)
-
-        game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
-
-    end
-
-end
-
-function CheckLevel2()
-
-			local Lvl = game:GetService("Players").LocalPlayer.Data.Level.Value
-
-			if Lvl >= 1 and Lvl <= 9 then
-
-				if tostring(game.Players.LocalPlayer.Team) == "Marines" then
-
-					namemon = "Trainee [Lv. 5]"
-
-					namequest = "MarineQuest"
-
-					questlv = 1
-
-					npcpos = CFrame.new(-2709.67944, 24.5206585, 2104.24585, -0.744724929, -3.97967455e-08, -0.667371571, 4.32403588e-08, 1, -1.07884304e-07, 0.667371571, -1.09201515e-07, -0.744724929)
-
-				elseif tostring(game.Players.LocalPlayer.Team) == "Pirates" then
-
-					namemon = "Bandit [Lv. 5]"
-
-					namequest = "BanditQuest1"
-
-					questlv = 1
-
-					npcpos = CFrame.new(1059.99731, 16.9222069, 1549.28162, -0.95466274, 7.29721794e-09, 0.297689587, 1.05190106e-08, 1, 9.22064114e-09, -0.297689587, 1.19340022e-08, -0.95466274)
-
-				end
-
-				return {["QuestLv"] = questlv, ["CFrameQuest"] = npcpos, ["NameMon"] = namemon, ["NameQuest"] = namequest}
-
-			end
-
-			local GuideModule = require(game:GetService("ReplicatedStorage").GuideModule)
-
-			local Quests = require(game:GetService("ReplicatedStorage").Quests)
-
-			for i,v in pairs(GuideModule["Data"]["NPCList"]) do
-
-				for i1,v1 in pairs(v["Levels"]) do
-
-					if Lvl >= v1 then
-
-						if not levelreq then
-
-							levelreq = 0
-
-						end
-
-						if v1 > levelreq then
-
-							npcpos = i["CFrame"]
-
-							questlv = i1
-
-							levelreq = v1
-
-						end
-
-						if #v["Levels"] == 3 and questlv == 3 then
-
-							npcpos = i["CFrame"]
-
-							questlv = 2
-
-							levelreq = v["Levels"][2]
-
-						end
-
-					end
-
-				end
-
-			end
-
-			for i,v in pairs(Quests) do
-
-				for i1,v1 in pairs(v) do
-
-					if v1["LevelReq"] == levelreq and i ~= "CitizenQuest" then
-
-						namequest = i
-
-						for i2,v2 in pairs(v1["Task"]) do
-
-							namemon = i2
-
-						end
-
-					end
-
-				end
-
-			end
-
-			if namequest == "MarineQuest2" then
-
-				namequest = "MarineQuest2"
-
-				questlv = 1
-
-				namemon = "Chief Petty Officer [Lv. 120]"
-
-				levelreq = 120
-
-			elseif namequest == "ImpelQuest" then
-
-				namequest = "PrisonerQuest"
-
-				questlv = 2
-
-				namemon = "Dangerous Prisoner"
-
-				levelreq = 210
-
-				npcpos = CFrame.new(5310.60547, 0.350014925, 474.946594, 0.0175017118, 0, 0.999846935, 0, 1, 0, -0.999846935, 0, 0.0175017118)
-
-			elseif namequest == "SkyExp1Quest" then
-
-				if questlv == 1 then
-
-					npcpos = CFrame.new(-4721.88867, 843.874695, -1949.96643, 0.996191859, -0, -0.0871884301, 0, 1, -0, 0.0871884301, 0, 0.996191859)
-
-				elseif questlv == 2 then
-
-					npcpos = CFrame.new(-7859.09814, 5544.19043, -381.476196, -0.422592998, 0, 0.906319618, 0, 1, 0, -0.906319618, 0, -0.422592998)
-
-				end
-
-			elseif namequest == "Area2Quest" and questlv == 2 then
-
-				namequest = "Area2Quest"
-
-				questlv = 1
-
-				namemon = "Swan Pirate [Lv. 775]"
-
-				levelreq = 775
-
-			end
-
-			namemon = namemon:sub(1,#namemon)
-
-			if not namemon:find("Lv") then
-
-				for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-
-					monlv = string.match(v.Name, "%d+")
-
-					if v.Name:find(namemon) and #v.Name > #namemon and tonumber(monlv) <= Lvl + 50 then
-
-						namemon = v.Name
-
-					end
-
-				end
-
-			end
-
-			if not namemon:find("Lv") then
-
-				for i,v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
-
-					monlv = string.match(v.Name, "%d+")
-
-					if v.Name:find(namemon) and #v.Name > #namemon and tonumber(monlv) <= Lvl + 50 then
-
-						namemon = v.Name
-
-					end
-
-				end
-
-			end
-
-			return {["QuestLv"] = questlv, ["CFrameQuest"] = npcpos, ["NameMon"] = namemon, ["NameQuest"] = namequest, ["LevelReq"] = levelreq}
-
-		end
-
--- [Bring Mob]
-
-task.spawn(function()
-
-	while true do wait()
-
-		if setscriptable then
-
-			setscriptable(game.Players.LocalPlayer, "SimulationRadius", true)
-
-		end
-
-		if sethiddenproperty then
-
-			sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-
-		end
-
-	end
-
-end)
-
-function InMyNetWork(object)
-
-	if isnetworkowner then
-
-		return isnetworkowner(object)
-
-	else
-
-		if (object.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 200 then 
-
-			return true
-
-		end
-
-		return false
-
-	end
-
-end
-
-task.spawn(function()
-
-	while task.wait() do
-
-		pcall(function()
-
-			if StatrMagnet then
-
-				for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-
-					if not string.find(v.Name,"Boss") and (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 500 then
-
-						if InMyNetWork(v.HumanoidRootPart) then
-
-							v.HumanoidRootPart.CFrame = PosMon
-
-							v.Humanoid.JumpPower = 0
-
-							v.Humanoid.WalkSpeed = 0
-
-							v.HumanoidRootPart.Size = Vector3.new(60,60,60)
-
-							v.HumanoidRootPart.Transparency = 1
-
-							v.HumanoidRootPart.CanCollide = false
-
-							v.Head.CanCollide = false
-
-							if v.Humanoid:FindFirstChild("Animator") then
-
-								v.Humanoid.Animator:Destroy()
-
-							end
-
-							v.Humanoid:ChangeState(11)
-
-							v.Humanoid:ChangeState(14)
-
-						end
-
-					end
-
-				end
-
-			end
-
-		end)
-
-	end
-
-end)
-
-local SeraphFrame = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts:WaitForChild("CombatFramework")))[2]
-
-local VirtualUser = game:GetService('VirtualUser')
-
-local RigControllerR = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework.RigController))[2]
-
-local Client = game:GetService("Players").LocalPlayer
-
-local DMG = require(Client.PlayerScripts.CombatFramework.Particle.Damage)
-
-            
-
-            function ChanceWeapon() 
-
-                local p13 = SeraphFrame.activeController
-
-                local wea = p13.blades[1]
-
-                if not wea then return end
-
-                while wea.Parent~=game.Players.LocalPlayer.Character do wea=wea.Parent end
-
-                return wea
-
-            end
-
-            
-
-            function getHits(Size)
-
-                local Hits = {}
-
-                local Enemies = workspace.Enemies:GetChildren()
-
-                local Characters = workspace.Characters:GetChildren()
-
-                for i=1,#Enemies do local v = Enemies[i]
-
-                    local Human = v:FindFirstChildOfClass("Humanoid")
-
-                    if Human and Human.RootPart and Human.Health > 0 and game.Players.LocalPlayer:DistanceFromCharacter(Human.RootPart.Position) < Size+55 then
-
-                        table.insert(Hits,Human.RootPart)
-
-                    end
-
-                end
-
-                for i=1,#Characters do local v = Characters[i]
-
-                    if v ~= game.Players.LocalPlayer.Character then
-
-                        local Human = v:FindFirstChildOfClass("Humanoid")
-
-                        if Human and Human.RootPart and Human.Health > 0 and game.Players.LocalPlayer:DistanceFromCharacter(Human.RootPart.Position) < Size+55 then
-
-                            table.insert(Hits,Human.RootPart)
-
-                        end
-
-                    end
-
-                end
-
-                return Hits
-
-            end
-
-            
-
-            task.spawn(
-
-                function()
-
-                while wait() do
-
-                    if FastAttack then
-
-                        if SeraphFrame.activeController then
-
-                            --if v.Humanoid.Health > 0 then
-
-                              SeraphFrame.activeController.attacking = false
-
-                                SeraphFrame.activeController.timeToNextBlock = 0
-
-                               SeraphFrame.activeController.humanoid.AutoRotate = true
-
-                               SeraphFrame.activeController.increment = 3
-
-                               SeraphFrame.activeController.blocking = false
-
-                               SeraphFrame.activeController.hitboxMagnitude = 150
-
-                                SeraphFrame.activeController.timeToNextAttack = 0
-
-                                SeraphFrame.activeController.focusStart = 0
-
-                                SeraphFrame.activeController.humanoid.AutoRotate = true
-
-                                SeraphFrame.activeController.increment = 1 + 1 / 1
-
-                             --end
-
-                        end
-
-                    end
-
-                end
-
-            end)
-
-            
-
-            
-
-            function Boost()
-
-                spawn(function()
-
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(ChanceWeapon()))
-
-                end)
-
-            end
-
-            
-
-            function Unboost()
-
-                spawn(function()
-
-                    game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("unequipWeapon",tostring(ChanceWeapon()))
-
-                end)
-
-            end
-
-            
-
-            local cdnormal = 8.0
-
-            local Animation = Instance.new("Animation")
-
-            local CooldownFastAttack = 0
-
-            Attack = function()
-
-                local ac = SeraphFrame.activeController
-
-                if ac and ac.equipped then
-
-                    task.spawn(
-
-                        function()
-
-                        if tick() - cdnormal > 9.0 then
-
-                            ac:attack()
-
-                            cdnormal = tick()
-
-                        else
-
-                             Animation.AnimationId = ac.anims.basic[2]
-
-                            ac.humanoid:LoadAnimation(Animation):Play(100, 99) --ท่าไม่ทำงานแก้เป็น (1,1)
-
-                            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(120), 2, "")
-
-                        end
-
-                    end)
-
-                end
-
-            end
-
-            
-
-            b = tick()
-
-            spawn(function()
-
-                while wait() do
-
-                    if FastAttack then
-
-                        if b - tick() > 0.75 then
-
-                            wait(.2)
-
-                            b = tick()
-
-                        end
-
-                        pcall(function()
-
-                            for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-
-                                if v.Humanoid.Health > 0 then
-
-                                    if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 40 then
-
-                                        Attack()
-
-                                        wait()
-
-                                        Boost()
-
-                                    end
-
-                                end
-
-                            end
-
-                        end)
-
-                    end
-
-                end
-
-            end)
-
-            
-
-            k = tick()
-
-            spawn(function()
-
-                while wait() do
-
-                    if FastAttack then
-
-                        if k - tick() > 0.75 then
-
-                            wait(0)
-
-                            k = tick()
-
-                        end
-
-                        pcall(function()
-
-                            for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-
-                                if v.Humanoid.Health > 0 then
-
-                                    if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 40 then
-
-                                    wait()
-
-                                    Unboost()
-
-                                    end
-
-                                end
-
-                            end
-
-                        end)
-
-                    end
-
-                end
-
-            end)
-
-            
-
-            tjw1 = true
-
-            task.spawn(
-
-                function()
-
-                    local a = game.Players.LocalPlayer
-
-                    local b = require(a.PlayerScripts.CombatFramework.Particle)
-
-                    local c = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
-
-                    if not shared.orl then
-
-                        shared.orl = c.wrapAttackAnimationAsync
-
-                    end
-
-                    if not shared.cpc then
-
-                        shared.cpc = b.play
-
-                    end
-
-                    if tjw1 then
-
-                        pcall(
-
-                            function()
-
-                                c.wrapAttackAnimationAsync = function(d, e, f, g, h)
-
-                                    local i = c.getBladeHits(e, f, g)
-
-                                    if i then
-
-                                        b.play = function()
-
-                                        end
-
-                                        d:Play(15.25, 15.25, 15.25)
-
-                                        h(i)
-
-                                        b.play = shared.cpc
-
-                                        wait(0)
-
-                                        d:Stop()
-
-                                    end
-
-                                end
-
-                            end
-
-                        )
-
-                    end
-
-                end
-
-            )
-
-            
-
-            
-
-            --[[
-
-            local CameRa = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework.CameraShaker)
-
-            CameRa.CameraShakeInstance.CameraShakeState = {FadingIn = 3,FadingOut = 2,Sustained = 0,Inactive =1}
-
-            
-
-            local Client = game.Players.LocalPlayer
-
-            local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
-
-            local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
-
-            task.spawn(function()
-
-                pcall(function()
-
-                    if not shared.orl then
-
-                        shared.orl = STOPRL.wrapAttackAnimationAsync
-
-                    end
-
-                        if not shared.cpc then
-
-                            shared.cpc = STOP.play 
-
-                        end
-
-                    spawn(function()
-
-                    require(game.ReplicatedStorage.Util.CameraShaker):Stop()
-
-                  require(game.ReplicatedStorage.Util.CameraShaker):Stop()
-
-                        game:GetService("RunService").Stepped:Connect(function()
-
-                            STOPRL.wrapAttackAnimationAsync = function(a,b,c,d,func)
-
-                                local Hits = STOPRL.getBladeHits(b,c,d)
-
-                                if Hits then
-
-                                    if FastAttack then
-
-                                        STOP.play = function() end
-
-                                        a:Play(20.1,15.1,10.1)
-
-                                        func(Hits)
-
-                                        STOP.play = shared.cpc
-
-                                        wait(a.length * 1000000000.5)
-
-                                        a:Stop()
-
-                                    else
-
-                                        func(Hits)
-
-                                        STOP.play = shared.cpc
-
-                                        wait(a.length * 10000000000.5)
-
-                                        a:Stop()
-
-                                    end
-
-                                end
-
-                            end
-
-                        end)
-
-                    end)
-
-                end)
-
-            end)
-
-]]
-
--- [Camera Shaker Function]
-
-	task.spawn(function()
-
-		local Camera = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework.CameraShaker)
-
-		while wait() do
-
-			pcall(function()
-
-				if _G.AutoFarm then
-
-					Camera.CameraShakeInstance.CameraShakeState.Inactive = 0
-
-				else
-
-					Camera.CameraShakeInstance.CameraShakeState.Inactive = 3
-
-				end
-
-			end)
-
-		end
-
-	end)
-
-	-- [Body Gyro]
-
-task.spawn(function()
-
-	game:GetService("RunService").Stepped:Connect(function()
-
-		pcall(function()
-
-			--[World 1]
-
-			if _G.AutoFarm
-
-			then
-
-				if syn then
-
-					setfflag("HumanoidParallelRemoveNoPhysics", "False")
-
-					setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
-
-					game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
-
-					if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == true then
-
-						game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = false
-
-					end
-
-				else
-
-					if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-
-						if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyVelocity1") then
-
-							if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == true then
-
-								game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit = false
-
-							end
-
-							local BodyVelocity = Instance.new("BodyVelocity")
-
-							BodyVelocity.Name = "BodyVelocity1"
-
-							BodyVelocity.Parent =  game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
-
-							BodyVelocity.MaxForce = Vector3.new(10000, 10000, 10000)
-
-							BodyVelocity.Velocity = Vector3.new(0, 0, 0)
-
-						end
-
-					end
-
-					for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-
-						if v:IsA("BasePart") then
-
-							v.CanCollide = false    
-
-						end
-
-					end
-
-				end
-
-			else
-
-				if game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyVelocity1") then
-
-					game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyVelocity1"):Destroy();
-
-				end
-
-			end
-
-		end)
-
-	end)
-
-end)
-
-    
-
+getgenv().Key = 'c35f0cf9f4baa5b2340bd215'
+repeat wait()
+until game:IsLoaded()
+local TableChat = {"iMAKEKaitan on top1","FB.worachot SMx","ไปจ้างล่าค่าหัว FB.Worachot SMx","พวกกุ No.1"}
+wait(2)
 spawn(function()
-
-    game:GetService('RunService').Stepped:Connect(function()
-
-        if _G.Remove_Effect then
-
-            for i, v in pairs(game.Workspace["_WorldOrigin"]:GetChildren()) do
-
-                if v.Name == "CurvedRing" or v.Name == "SwordSlash" or v.Name == "Sounds" or v.Name == "SlashHit" or v.Name == "DamageCounter" then--or v.Name == "SlashHit"
-
-                    v:Destroy() 
-
-                end
-
-            end
-
-        end
-
-    end)
-
+    while wait() do 
+        pcall(function()
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TableChat[math.random(1,#TableChat)],"All")
+            wait(45)
+        end)
+    end
 end)
-
-_G.Remove_Effect = true
-
-spawn(function()
-
-    game:GetService('RunService').Stepped:Connect(function()
-
-        if _G.Remove_Effect then
-
-            for i, v in pairs(game:GetService("ReplicatedStorage").Effect.Container:GetChildren()) do
-
-                if v.Name == "Death" then
-
-                    v:Destroy() 
-
-                end
-
-            end
-
-        end
-
-    end)
-
-end)
-
-function TP2(Pos)
-
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
-
-end
-
-spawn(function()
-
-	while wait() do
-
-		pcall(function()
-
-			if _G.AutoFarm then
-
-				if game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false then
-
-					CheckLevel2()
-
-					repeat wait()
-
-						TP(npcpos)
-
-					until (npcpos.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < 10
-
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", namequest, questlv)
-
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
-
-				elseif game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == true then
-
-					if game.Workspace.Enemies:FindFirstChild(namemon) then
-
-						for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-
-							if v.Name == namemon and v.Humanoid.Health > 0 then
-
-								repeat wait()
-
-									if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-
-					                	local args = {
-
-						                	[1] = "Buso"
-
-					                	}
-
-						               	game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-
-					               	end
-
-									PosMon = v.HumanoidRootPart.CFrame
-
-									v.Humanoid:ChangeState(11)
-
-									v.Humanoid.JumpPower = 0
-
-									v.Humanoid.WalkSpeed = 0
-
-									v.HumanoidRootPart.CanCollide = false
-
-									v.HumanoidRootPart.Size = Vector3.new(60,60,60)
-
-									EquipWeapon("Combat")
-
-									if (v.HumanoidRootPart.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 280 then
-
-										TP2(v.HumanoidRootPart.CFrame * CFrame.new(0,20,10))
-
-									elseif (v.HumanoidRootPart.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude >= 281 then
-
-										TP(v.HumanoidRootPart.CFrame * CFrame.new(0,20,10))
-
-									end
-
-									FastAttack = true
-
-									StatrMagnet = true
-
-									--game:GetService("VirtualUser"):CaptureController()
-
-									--game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 670))
-
-								until game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false or not v.Parent or v.Humanoid.Health <= 0 or not _G.AutoFarm
-
-								FastAttack = false
-
-								StatrMagnet = false
-
-							end
-
-						end
-
-					else
-
-						CheckLevel2()
-
-						for i,v in pairs(game.Workspace._WorldOrigin.EnemySpawns:GetChildren()) do
-
-							if v.Name == namemon then
-
-								repeat wait()
-
-									if (v.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 280 then
-
-										if v.CFrame ~= nil then
-
-											wait(.25)
-
-											TP2(v.CFrame * CFrame.new(0, 30, 0))
-
-										end
-
-									elseif (v.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude >= 281 then
-
-										if v.CFrame ~= nil then
-
-											wait(.15)
-
-											TP(v.CFrame * CFrame.new(0,30,0))
-
-										end
-
-									end
-
-								until game.Workspace.Enemies:FindFirstChild(namemon) or not _G.AutoFarm or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == true
-
-							end
-
-						end
-
-					end
-
-				end
-
-			end
-
-		end)
-
-	end
-
-end)
-
-_G.AutoFarm = true
+getgenv().Setting = {
+    ["Team"] = "Pirates", --Marines,Pirates
+    ["Webhook"] = {
+        ["Enabled"] = true,
+        ["Url Webhook"] = "https://discord.com/api/webhooks/1193359314992242739/y05kket3mtjTSsiaYMxzJ-rxV0DmAteaUr05Gi3RkMZAH6f7AaqGKq6k_FCOWX3SrIYQ", --Your Url
+    },
+    ["Misc"] = {
+        ["AutoBuyRandomandStoreFruit"] = true,
+        ["AutoBuySurprise"] = true,
+    },
+    ["Click"] = {
+        ["Enable"] = true,
+        ["Click Gun"] = true,
+        ["OnLowHealthDisable"] = true,
+        ["LowHealth"] = 4500,
+    },
+    ["SafeZone"] = {
+        ["Enable"] = true,
+        ["LowHealth"] = 4300,
+        ["MaxHealth"] = 5300,
+        ["Teleport Y"] = 2000
+    },
+    ["Race V4"] = {
+        ["Enable"] = true,
+    },
+    ["Invisible"] = true,
+    ["White Screen"] = true,
+    ["GunMethod"] = false, --Support Only Melee And Gun,Not Invisible, Turn On Enabled Gun and Melee Please
+    ["SpamSkill"] = false, -- Will use all skills as fast as possbile ignore holding skills
+    ["Weapons"] = {
+        ["Melee"] = {
+            ["Enable"] = true,
+            ["Delay"] = 3,
+            ["Skills"] = {
+                ["Z"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 0,
+                },
+               [ "X"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 0,
+                },
+
+                ["C"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 0,
+                },
+            },
+        },
+        ["Blox Fruit"] = {
+            ["Enable"] = true,
+            ["Delay"] = 1,
+            ["Skills"] = {
+                ["Z"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 0,
+                },
+                ["X"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 0,
+                },
+
+                ["C"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 0,
+                },
+                ["V"] = {
+                    ["Enable"] = false,
+                    ["HoldTime"] = 3,
+                },
+                ["F"] = {
+                    ["Enable"] = false,
+                    ["HoldTime"] = 0,
+                },
+            },
+        },
+        ["Gun"] = {
+            ["Enable"] = false,
+            ["Delay"] = 2.5,
+            ["Skills"] = {
+                ["Z"] = {
+                    ["Enable"] = false,
+                    ["HoldTime"] = 0,
+                },
+                ["X"] = {
+                    ["Enable"] = false,
+                    ["HoldTime"] = 0,
+                },
+            },
+        },
+        ["Sword"] = {
+            ["Enable"] = true,
+            ["Delay"] = 1,
+            ["Skills"] = {
+                ["Z"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 1,
+                },
+                ["X"] = {
+                    ["Enable"] = true,
+                    ["HoldTime"] = 0,
+                },
+            },
+        },
+    }
+}
+repeat wait() until game:IsLoaded() and game.Players.LocalPlayer
+loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/main/BountyShit.lua"))()
